@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          persist-credentials: true 
+          persist-credentials: true
 
       # 2. Set up Node.js
       - name: Setup Node.js
@@ -31,11 +31,13 @@ jobs:
         run: npx auto-changelog -p
 
       # 5. Commit and push updated CHANGELOG.md if there are changes
-      - name: Commit and push updated CHANGELOG.md
+      - name: Commit and Push Changelog
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add CHANGELOG.md
           git diff --quiet || git commit -m "chore: update changelog"
+          # Push using the token in the HTTPS URL
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
