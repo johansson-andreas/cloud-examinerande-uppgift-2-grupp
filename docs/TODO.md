@@ -1,6 +1,6 @@
 # TODO
 
-Alternativ ur spec:en som vil vill fokusera på.
+Alternativ ur spec:en som vi vill fokusera på.
 
 ## Nya features:
 - [ ] Bryt ut backend från Next.js
