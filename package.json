@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "changelog": "auto-changelog -p"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",
@@ -20,6 +21,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "auto-changelog": "^2.5.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "husky": "^9.1.7",
