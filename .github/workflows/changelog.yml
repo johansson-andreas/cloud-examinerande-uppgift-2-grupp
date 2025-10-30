@@ -13,6 +13,8 @@ jobs:
       # 1. Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true 
 
       # 2. Set up Node.js
       - name: Setup Node.js
