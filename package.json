@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prepare": "husky",
+    "changelog": "auto-changelog -p"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",
@@ -19,9 +21,19 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "auto-changelog": "^2.5.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
