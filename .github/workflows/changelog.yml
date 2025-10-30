@@ -31,12 +31,11 @@ jobs:
         run: npx auto-changelog -p
 
       # 5. Commit and push updated CHANGELOG.md if there are changes
-      - name: Commit Changelog
+      - name: Commit and push updated CHANGELOG.md
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add CHANGELOG.md
           git diff --quiet || git commit -m "chore: update changelog"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+
