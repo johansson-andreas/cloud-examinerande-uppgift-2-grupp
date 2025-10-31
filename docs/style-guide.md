@@ -19,7 +19,7 @@ Branch-namnet blir då t.ex: `feat/user-api-routes` eller `fix/broken-login-form
 
 - `feature`: Lägger till ny funktionalitet.
 - `fix`: Ändrar, optimerar eller fixar existerande kod.
-- `chore` Städar upp eller refaktorerar kod, uppdaterar dependencies, lägger till kommentarer, flyttar runt filer etc.
+- `chore`: Städar upp eller refaktorerar kod, uppdaterar dependencies, lägger till kommentarer, flyttar runt filer etc.
 - `docs`: Bygger ut eller kompletterar dokumentation.
 - `test`: Utveckling och implementation av tester.
 
