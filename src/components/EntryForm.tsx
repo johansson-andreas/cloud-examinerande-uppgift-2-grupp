@@ -28,9 +28,8 @@ export default function EntryForm({ initial, onSave, submitLabel = "Save Entry" 
 
     try {
       await onSave({ title, content })
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err)
-      setError(message || "Failed to save entry")
+    } catch (_err: unknown) {
+      setError("Failed to save entry")
     } finally {
       setLoading(false)
     }

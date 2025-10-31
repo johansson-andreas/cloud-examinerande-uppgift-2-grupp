@@ -25,9 +25,8 @@ export default function EditEntryPage() {
       try {
         const data = await getEntry(entryId)
         setEntry(data)
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : String(err)
-        setError(message || "Failed to load entry")
+      } catch (_err: unknown) {
+        setError("Failed to load entry")
       } finally {
         setLoading(false)
       }
@@ -90,9 +89,8 @@ export default function EditEntryPage() {
             try {
               await updateEntry(entry.id, { title, content })
               router.push("/dashboard")
-            } catch (err: unknown) {
-              const message = err instanceof Error ? err.message : String(err)
-              setError(message || "Failed to update entry")
+            } catch (_err: unknown) {
+              setError("Failed to update entry")
             }
           }}
         />

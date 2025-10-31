@@ -27,9 +27,8 @@ export default function DashboardPage() {
 
         const data = await getEntries()
         setEntries(data)
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : String(err);
-        setError(message || 'Failed to load entries')
+      } catch (_err: unknown) {
+        setError('Failed to load entries')
       } finally {
         setLoading(false)
       }
