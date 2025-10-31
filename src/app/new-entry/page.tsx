@@ -9,9 +9,9 @@ import { getCurrentUser } from "@/lib/supabase/auth";
 
 export default function NewEntryPage() {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [title, _setTitle] = useState("");
+  const [content, _setContent] = useState("");
+  const [_error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -24,26 +24,6 @@ export default function NewEntryPage() {
 
     checkAuth();
   }, [router]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!title.trim() || !content.trim()) {
-      setError("Title and content are required");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      await createEntry({ title, content });
-      router.push("/dashboard");
-    } catch (_err: unknown) {
-      setError("Failed to create entry");
-      setLoading(false);
-    }
-  };
 
   const displayDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",

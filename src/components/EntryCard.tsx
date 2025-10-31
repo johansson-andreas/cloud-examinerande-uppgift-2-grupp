@@ -15,10 +15,6 @@ export default function EntryCard({ entry }: EntryCardProps) {
 		minute: "2-digit",
 	});
 
-  const handleEditEntry = () => {
-
-  }
-
   return (
     <div className="card" style={{ minWidth: '600px' }}>
       <div className="flex items-start justify-between">

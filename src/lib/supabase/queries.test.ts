@@ -149,6 +149,7 @@ describe('updateEntry', () => {
 
     it('throws an error when updates is null', async () => {
       await expect(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         updateEntry(entryId, null as any)
       ).rejects.toThrow('No updates provided')
 
