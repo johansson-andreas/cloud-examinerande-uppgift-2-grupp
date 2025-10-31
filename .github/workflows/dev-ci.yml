@@ -1,4 +1,4 @@
-name: test-and-lint
+name: dev-ci
 
 on:
   pull_request:
