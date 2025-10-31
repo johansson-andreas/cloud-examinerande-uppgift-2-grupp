@@ -31,6 +31,10 @@
 		@apply px-6 py-3 border border-dark-brown text-dark-brown rounded-sm hover:bg-beige transition-colors duration-200 font-sans text-sm tracking-wide;
 	}
 
+	.btn-icon {
+		@apply p-2 text-dark-brown rounded-sm hover:bg-beige transition-colors duration-200;
+	}
+
 	.input-field {
 		@apply w-full px-4 py-3 border border-warm-gray/30 rounded-sm bg-white focus:outline-none focus:border-dark-brown transition-colors duration-200;
 	}
