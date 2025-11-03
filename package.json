@@ -9,7 +9,8 @@
     "lint": "eslint",
     "prepare": "husky",
     "changelog": "auto-changelog -p",
-    "test": "jest"
+    "test": "jest",
+    "test:playwright": "playwright test"
   },
   "dependencies": {
     "@uiw/react-md-editor": "^4.0.8",
@@ -22,6 +23,7 @@
     "supabase": "^2.54.11"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@supabase/supabase-js": "^2.78.0",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
