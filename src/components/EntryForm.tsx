@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { NewEntry } from "@/types/database.types";
+import MDEditor, { commands } from "@uiw/react-md-editor";
+import rehypeSanitize from "rehype-sanitize";
 
 interface EntryFormProps {
   initial?: Partial<NewEntry>;
@@ -67,7 +69,21 @@ export default function EntryForm({
         >
           Content
         </label>
-        <textarea
+        <div className="container">
+          <MDEditor
+            value={content}
+            onChange={(val) => setContent(val ?? "")}
+            preview="edit"
+            textareaProps={{
+              placeholder: "Write your thoughts...",
+            }}
+            previewOptions={{
+              rehypePlugins: [[rehypeSanitize]],
+            }}
+            className="w-full min-h-[400px]"
+          />
+        </div>
+        {/* <textarea
           id="content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -75,7 +91,7 @@ export default function EntryForm({
           placeholder="Write your thoughts..."
           required
           disabled={loading}
-        />
+        /> */}
       </div>
 
       {error && (

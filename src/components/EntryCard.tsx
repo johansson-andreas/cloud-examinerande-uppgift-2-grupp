@@ -2,6 +2,7 @@ import { Entry } from "@/types/database.types";
 import { EditIcon } from "./icons/Edit";
 import Link from "next/link";
 import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface EntryCardProps {
   entry: Entry;
@@ -35,7 +36,7 @@ export default function EntryCard({ entry }: EntryCardProps) {
       </div>
 
       <div className="text-dark-brown/80 prose" style={{ width: "550px" }}>
-        <Markdown>{entry.content}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]}>{entry.content}</Markdown>
       </div>
     </div>
   );

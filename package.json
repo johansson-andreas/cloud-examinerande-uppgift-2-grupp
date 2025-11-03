@@ -12,10 +12,13 @@
     "test": "jest"
   },
   "dependencies": {
+    "@uiw/react-md-editor": "^4.0.8",
     "next": "16.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-markdown": "^10.1.0",
+    "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
     "supabase": "^2.54.11"
   },
   "devDependencies": {

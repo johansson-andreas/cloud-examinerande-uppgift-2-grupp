@@ -43,4 +43,8 @@
   .card {
     @apply bg-white border border-warm-gray/20 rounded-sm p-8 shadow-sm;
   }
+
+  .wmde-markdown {
+    @apply prose max-w-none;
+  }
 }
