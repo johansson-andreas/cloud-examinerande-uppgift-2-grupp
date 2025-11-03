@@ -10,7 +10,8 @@
     "prepare": "husky",
     "changelog": "auto-changelog -p",
     "test": "jest",
-    "test:playwright": "playwright test"
+    "test:playwright": "playwright test",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@uiw/react-md-editor": "^4.0.8",
@@ -47,6 +48,11 @@
     "*.{ts,tsx,js,jsx,json,css,md}": [
       "prettier --write",
       "git add"
+    ]
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "<rootDir>/e2e/"
     ]
   }
 }
