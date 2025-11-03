@@ -43,5 +43,5 @@ Alternativ ur spec:en som vi vill fokusera på.
 - [ ] Typ security scanning (npm audit eller Snyk)
 - [ ] Lighthouse CI: Automatiska tester av prestanda, tillgänglighet, SEO och best practices. Samma verktyg som finns i Chrome DevTools.
 - [ ] Deploy till staging-miljö innan production (men utan Vercel)
-- [ ] E2E (end-to-end) tester med Playwright eller Cypress
+- [x] E2E (end-to-end) tester med Playwright eller Cypress
 - [ ] En större och mer utförlig testsvit (som testar fler saker)

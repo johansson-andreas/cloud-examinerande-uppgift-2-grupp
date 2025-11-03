@@ -6,7 +6,7 @@ Automatisk formatering med Prettier genom [Husky](https://typicode.github.io/hus
 
 ## Test och lint
 
-När man gör en pull request till branchen `main` så kommer requesten gå igenom ett workflow som lintar och testar koden.
+När man gör en pull request till branchen `main` så kommer requesten gå igenom ett workflow som lintar och testar koden. Tester görs med jest och Playwight (e2e).
 
 ## Auto Changelog
 
