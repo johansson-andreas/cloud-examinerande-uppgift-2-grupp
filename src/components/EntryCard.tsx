@@ -1,6 +1,7 @@
 import { Entry } from "@/types/database.types";
 import { EditIcon } from "./icons/Edit";
 import Link from "next/link";
+import Markdown from "react-markdown";
 
 interface EntryCardProps {
   entry: Entry;
@@ -33,12 +34,9 @@ export default function EntryCard({ entry }: EntryCardProps) {
         </Link>
       </div>
 
-      <p
-        className="text-dark-brown/80 leading-relaxed whitespace-pre-wrap"
-        style={{ width: "550px" }}
-      >
-        {entry.content}
-      </p>
+      <div className="text-dark-brown/80 prose" style={{ width: "550px" }}>
+        <Markdown>{entry.content}</Markdown>
+      </div>
     </div>
   );
 }
