@@ -4,7 +4,7 @@ Alternativ ur spec:en som vi vill fokusera på.
 
 ## Nya features:
 - [ ] Bryt ut backend från Next.js
-- [ ] Kunna redigera inlägg
+- [x] Kunna redigera inlägg
 - [ ] Ta bort inlägg (med bekräftelse innan det tas bort)
 - [ ] Enkel sök (taggar)
 - [ ] Markdownsupport för inläggen
