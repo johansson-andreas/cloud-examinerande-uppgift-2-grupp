@@ -20,9 +20,8 @@ export default function LoginPage() {
     try {
       await signIn({ email, password })
       router.push('/dashboard')
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      setError(message || 'An error occurred during login')
+    } catch (_err: unknown) {
+      setError('An error occurred during login')
     } finally {
       setLoading(false)
     }

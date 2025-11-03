@@ -10,6 +10,17 @@ const eslintConfig = defineConfig([
       // only forbid characters we care about (example: >, }, `, ")
       // Don't include the single quote (') here so apostrophes in text are okay
       "react/no-unescaped-entities": ["error", { "forbid": [">", "}", "`", "\""] }],
+      
+      // Allow unused variables if they start with an underscore (e.g., _err)
+      // This is a common convention for intentionally unused variables
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "caughtErrorsIgnorePattern": "^_"
+        }
+      ],
     },
   },
   // Override default ignores of eslint-config-next.
