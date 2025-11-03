@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "lib": ["deno.ns", "deno.window", "esnext"],
+    "strict": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "target": "esnext",
+    "noEmit": true
+  }
+}
