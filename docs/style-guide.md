@@ -2,8 +2,8 @@
 
 ## Branches
 
-- `main` - production deployment
-- `dev` - staging preview
+- `prod` - production deployment
+- `main` - staging preview
 - `{type}/{issue}` - working branches
 
 Branches kan skapas via GitHub Projects för att direkt koppla en branch till ett specifikt issue. Då kan man lättare ta sig till den branch där någon arbetar på ett issue och titta på koden.
@@ -40,9 +40,9 @@ Förslag på prefix för commits:
 
 ## Pull requests
 
-- En pull request från en `working branch` till `dev` kräver review av **minst en person**
-- En pull request från `dev` till `main` kräver review av **branch maintainer** (alt. **två personer**?)
-- Branch skall raderas när den merge:as in i `dev`.
+- En pull request från en `working branch` till `main` kräver review av **minst en person**
+- En pull request från `main` till `prod` kräver review av **branch maintainer** (alt. **två personer**?)
+- Branch skall raderas när den merge:as in i `main`.
 
 ## Formatering
 
