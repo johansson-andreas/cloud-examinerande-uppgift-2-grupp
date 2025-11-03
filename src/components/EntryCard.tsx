@@ -28,9 +28,13 @@ export default function EntryCard({ entry }: EntryCardProps) {
             {entry.title}
           </h2>
         </div>
-        <Link href={`/edit-entry/${entry.id}`} title="Edit entry">
+        <Link
+          href={`/edit-entry/${entry.id}`}
+          title="Edit Entry"
+          aria-label="Edit Entry"
+        >
           <button className="btn-icon">
-            <EditIcon className="w-6 h-6" />
+            <EditIcon className="w-6 h-6" aria-hidden="true" />
           </button>
         </Link>
       </div>
