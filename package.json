@@ -49,10 +49,5 @@
       "prettier --write",
       "git add"
     ]
-  },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "<rootDir>/e2e/"
-    ]
   }
 }
