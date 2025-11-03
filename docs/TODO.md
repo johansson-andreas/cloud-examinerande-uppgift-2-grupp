@@ -12,11 +12,11 @@ Alternativ ur spec:en som vi vill fokusera på.
 - [ ] Lägg in så att användaren kan lägga upp filer (använd någon typ av Storage)
 
 ## CI/CD:
-- [ ] Hantera projektet med GitHub Projects
+- [x] Hantera projektet med GitHub Projects
 - [ ] Sätt upp regler för branch management, commits och peer review vid merge requests
 - [ ] Deploya frontend till Vercel (?)
-- [ ] Grundläggande CI/CD med Github Actions (t.ex. `lint` och `test`)
-- [ ] Implementera tester
+- [x] Grundläggande CI/CD med Github Actions (t.ex. `lint` och `test`)
+- [x] Implementera tester
 - [ ] Testa projektet med Docker
 - [ ] Generera automatiskt en CHANGELOG.md baserat på era commit-meddelanden.
 - [ ] Deploya backend och frontend på olika ställen
