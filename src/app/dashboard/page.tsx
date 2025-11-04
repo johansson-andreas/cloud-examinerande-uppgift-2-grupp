@@ -1,41 +1,58 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import Header from '@/components/Header'
-import EntryCard from '@/components/EntryCard'
-import { getEntries } from '@/lib/supabase/queries'
-import { getCurrentUser } from '@/lib/supabase/auth'
-import { Entry } from '@/types/database.types'
-import Link from 'next/link'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Header from "@/components/Header";
+import EntryCard from "@/components/EntryCard";
+import { getEntries } from "@/lib/supabase/queries";
+import { getCurrentUser } from "@/lib/supabase/auth";
+import { Entry } from "@/types/database.types";
+import Link from "next/link";
+import Search from "@/components/Search";
+import { searchEntries } from "@/lib/supabase/queries";
 
 export default function DashboardPage() {
-  const router = useRouter()
-  const [entries, setEntries] = useState<Entry[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [_searchQuery, setSearchQuery] = useState<string>("");
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const user = await getCurrentUser()
+        const user = await getCurrentUser();
 
         if (!user) {
-          router.push('/login')
-          return
+          router.push("/login");
+          return;
         }
 
-        const data = await getEntries()
-        setEntries(data)
+        const data = await getEntries();
+        setEntries(data);
       } catch (_err: unknown) {
-        setError('Failed to load entries')
+        setError("Failed to load entries");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    loadData()
-  }, [router])
+    loadData();
+  }, [router]);
+
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    setIsSearching(true);
+    try {
+      const results = await searchEntries(query);
+      setEntries(results);
+    } catch (_err: unknown) {
+      setError("Failed to search entries");
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -45,7 +62,7 @@ export default function DashboardPage() {
           <p className="text-warm-gray text-center">Loading...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -56,31 +73,42 @@ export default function DashboardPage() {
           <p className="text-red-600 text-center">{error}</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen">
       <Header />
 
-      <main className="max-w-4xl mx-auto py-12" style={{ paddingLeft: '80px', paddingRight: '80px' }}>
+      <main
+        className="max-w-4xl mx-auto py-12"
+        style={{ paddingLeft: "80px", paddingRight: "80px" }}
+      >
         <div className="flex items-center justify-between mb-12">
           <div>
-            <h2 className="text-3xl font-serif text-dark-brown mb-2">Your Entries</h2>
+            <h2 className="text-3xl font-serif text-dark-brown mb-2">
+              Your Entries
+            </h2>
             <p className="text-warm-gray text-sm">
-              {entries.length} {entries.length === 1 ? 'entry' : 'entries'}
+              {entries.length} {entries.length === 1 ? "entry" : "entries"}
             </p>
           </div>
           <Link href="/new-entry">
-            <button className="btn-primary" style={{ minWidth: '160px' }}>
+            <button className="btn-primary" style={{ minWidth: "160px" }}>
               New Entry
             </button>
           </Link>
         </div>
 
+        <div className="mb-4">
+          <Search onSearch={handleSearch} isLoading={isSearching} />
+        </div>
+
         {entries.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-warm-gray mb-6">You haven't written any entries yet.</p>
+            <p className="text-warm-gray mb-6">
+              You haven't written any entries yet.
+            </p>
             <Link href="/new-entry">
               <button className="btn-secondary">Write your first entry</button>
             </Link>
@@ -94,5 +122,5 @@ export default function DashboardPage() {
         )}
       </main>
     </div>
-  )
+  );
 }
