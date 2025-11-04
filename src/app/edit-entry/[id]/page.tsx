@@ -73,7 +73,7 @@ export default function EditEntryPage() {
       <Header />
 
       <main className="max-w-3xl mx-auto px-6 py-12">
-        <div className="mb-8">
+        <div className="mb-8 max-sm:text-center">
           <button
             onClick={() => router.back()}
             className="text-warm-gray hover:text-dark-brown text-sm mb-4"

@@ -100,7 +100,7 @@ export default function EntryForm({
         </div>
       )}
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 justify-end">
         <button type="submit" className="btn-primary" disabled={loading}>
           {loading ? "Saving..." : submitLabel}
         </button>

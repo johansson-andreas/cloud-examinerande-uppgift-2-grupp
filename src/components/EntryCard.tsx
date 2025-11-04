@@ -18,7 +18,7 @@ export default function EntryCard({ entry }: EntryCardProps) {
   });
 
   return (
-    <div className="card" style={{ minWidth: "600px" }}>
+    <div className="card">
       <div className="flex items-start justify-between">
         <div className="mb-4">
           <div className="text-xs text-warm-gray mb-2 tracking-wide uppercase">
@@ -39,8 +39,14 @@ export default function EntryCard({ entry }: EntryCardProps) {
         </Link>
       </div>
 
-      <div className="text-dark-brown/80 prose" style={{ width: "550px" }}>
-        <Markdown remarkPlugins={[remarkGfm]}>{entry.content}</Markdown>
+      <div className="prose max-w-none text-dark-brown/80">
+        <div
+          className="overflow-x-auto scrollbar-thin"
+          tabIndex={0}
+          aria-label="Scrollable table container"
+        >
+          <Markdown remarkPlugins={[remarkGfm]}>{entry.content}</Markdown>
+        </div>
       </div>
     </div>
   );
