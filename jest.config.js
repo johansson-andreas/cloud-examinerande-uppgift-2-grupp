@@ -7,6 +7,7 @@ const config = {
   transform: {
     ...tsJestTransformCfg,
   },
+  testPathIgnorePatterns: ["<rootDir>/__e2e__/"],
 };
 
 /** @type {import("jest").Config} **/
