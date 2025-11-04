@@ -1,44 +1,53 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { NewEntry } from "@/types/database.types"
+import { useState } from "react";
+import { NewEntry } from "@/types/database.types";
+import MDEditor, { commands } from "@uiw/react-md-editor";
+import rehypeSanitize from "rehype-sanitize";
 
 interface EntryFormProps {
-  initial?: Partial<NewEntry>
-  onSave: (payload: NewEntry) => Promise<void>
-  submitLabel?: string
+  initial?: Partial<NewEntry>;
+  onSave: (payload: NewEntry) => Promise<void>;
+  submitLabel?: string;
 }
 
-export default function EntryForm({ initial, onSave, submitLabel = "Save Entry" }: EntryFormProps) {
-  const [title, setTitle] = useState(initial?.title ?? "")
-  const [content, setContent] = useState(initial?.content ?? "")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export default function EntryForm({
+  initial,
+  onSave,
+  submitLabel = "Save Entry",
+}: EntryFormProps) {
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [content, setContent] = useState(initial?.content ?? "");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
 
     if (!title.trim() || !content.trim()) {
-      setError("Title and content are required")
-      return
+      setError("Title and content are required");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      await onSave({ title, content })
+      await onSave({ title, content });
     } catch (_err: unknown) {
-      setError("Failed to save entry")
+      setError("Failed to save entry");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="title" className="block text-sm mb-2 text-dark-brown font-medium">
+        <label
+          htmlFor="title"
+          className="block text-sm mb-2 text-dark-brown font-medium"
+        >
           Title
         </label>
         <input
@@ -54,10 +63,27 @@ export default function EntryForm({ initial, onSave, submitLabel = "Save Entry" 
       </div>
 
       <div>
-        <label htmlFor="content" className="block text-sm mb-2 text-dark-brown font-medium">
+        <label
+          htmlFor="content"
+          className="block text-sm mb-2 text-dark-brown font-medium"
+        >
           Content
         </label>
-        <textarea
+        <div className="container">
+          <MDEditor
+            value={content}
+            onChange={(val) => setContent(val ?? "")}
+            preview="edit"
+            textareaProps={{
+              placeholder: "Write your thoughts...",
+            }}
+            previewOptions={{
+              rehypePlugins: [[rehypeSanitize]],
+            }}
+            className="w-full min-h-[400px]"
+          />
+        </div>
+        {/* <textarea
           id="content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -65,7 +91,7 @@ export default function EntryForm({ initial, onSave, submitLabel = "Save Entry" 
           placeholder="Write your thoughts..."
           required
           disabled={loading}
-        />
+        /> */}
       </div>
 
       {error && (
@@ -80,5 +106,5 @@ export default function EntryForm({ initial, onSave, submitLabel = "Save Entry" 
         </button>
       </div>
     </form>
-  )
+  );
 }
