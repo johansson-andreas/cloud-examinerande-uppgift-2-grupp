@@ -8,23 +8,15 @@ interface ConfirmModalProps {
 }
 
 export function ConfirmModal({ open, onClose, onConfirm }: ConfirmModalProps) {
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteEntry(id);
-    } catch (_err: unknown) {
-      console.error("Failed to delete entry");
-    }
-  };
-
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white rounded-xl shadow-lg p-6 w-80 text-center">
+      <div className="bg-white rounded-xl shadow-lg p-15 w-100 text-center">
         <h2 className="text-lg font-semibold mb-4">Are you sure?</h2>
         <p className="text-gray-600 mb-6">This action cannot be undone.</p>
 
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-10">
           <button
             onClick={onConfirm}
             className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
