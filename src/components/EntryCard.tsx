@@ -5,7 +5,8 @@ import { RemoveIcon } from "./icons/Remove";
 import { deleteEntry } from "@/lib/supabase/queries";
 import { ConfirmModal } from "./ConfirmModal";
 import Link from "next/link";
-import { use } from "react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useState } from "react";
 
 interface EntryCardProps {
@@ -64,7 +65,9 @@ export default function EntryCard({ entry }: EntryCardProps) {
           />
         </div>
       </div>
-
+      <div className="text-dark-brown/80 prose" style={{ width: "550px" }}>
+        <Markdown remarkPlugins={[remarkGfm]}>{entry.content}</Markdown>
+      </div>
       <p
         className="text-dark-brown/80 leading-relaxed whitespace-pre-wrap"
         style={{ width: "550px" }}
