@@ -1,14 +1,20 @@
+"use client";
 import { Entry } from "@/types/database.types";
 import { EditIcon } from "./icons/Edit";
+import { RemoveIcon } from "./icons/Remove";
+import { deleteEntry } from "@/lib/supabase/queries";
+import { ConfirmModal } from "./ConfirmModal";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useState } from "react";
 
 interface EntryCardProps {
   entry: Entry;
 }
 
 export default function EntryCard({ entry }: EntryCardProps) {
+  const [open, setOpen] = useState(false);
   const formattedDate = new Date(entry.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -16,6 +22,14 @@ export default function EntryCard({ entry }: EntryCardProps) {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteEntry(id);
+    } catch (_err: unknown) {
+      console.error("Failed to delete entry");
+    }
+  };
 
   return (
     <div className="card">
@@ -28,15 +42,28 @@ export default function EntryCard({ entry }: EntryCardProps) {
             {entry.title}
           </h2>
         </div>
-        <Link
-          href={`/edit-entry/${entry.id}`}
-          title="Edit Entry"
-          aria-label="Edit Entry"
-        >
-          <button className="btn-icon">
-            <EditIcon className="w-6 h-6" aria-hidden="true" />
+        <div>
+          <Link href={`/edit-entry/${entry.id}`} title="Edit entry">
+            <button className="btn-icon">
+              <EditIcon className="w-6 h-6" />
+            </button>
+          </Link>
+          <button
+            className="btn-icon"
+            onClick={() => setOpen(true)}
+            title="Delete entry"
+          >
+            <RemoveIcon className="w-6 h-6" />
           </button>
-        </Link>
+          <ConfirmModal
+            open={open}
+            onClose={() => setOpen(false)}
+            onConfirm={() => {
+              handleDelete(entry.id);
+              setOpen(false);
+            }}
+          />
+        </div>
       </div>
 
       <div className="prose max-w-none text-dark-brown/80">
