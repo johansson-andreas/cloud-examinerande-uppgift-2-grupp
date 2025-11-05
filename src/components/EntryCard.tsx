@@ -21,6 +21,7 @@ export default function EntryCard({ entry }: EntryCardProps) {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: false,
   });
 
   const handleDelete = async (id: string) => {
