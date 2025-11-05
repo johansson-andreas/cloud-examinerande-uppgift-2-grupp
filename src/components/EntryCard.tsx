@@ -68,12 +68,6 @@ export default function EntryCard({ entry }: EntryCardProps) {
       <div className="text-dark-brown/80 prose" style={{ width: "550px" }}>
         <Markdown remarkPlugins={[remarkGfm]}>{entry.content}</Markdown>
       </div>
-      <p
-        className="text-dark-brown/80 leading-relaxed whitespace-pre-wrap"
-        style={{ width: "550px" }}
-      >
-        {entry.content}
-      </p>
     </div>
   );
 }
