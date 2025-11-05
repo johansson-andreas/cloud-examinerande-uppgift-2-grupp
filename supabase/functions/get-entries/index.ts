@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // These are provided automatically by the Edge Runtime
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;

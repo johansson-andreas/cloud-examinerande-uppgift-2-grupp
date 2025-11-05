@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Installera dependencies
-RUN npm install
+RUN npm ci
 
 # Kopiera all kod
 COPY . .
@@ -14,8 +14,19 @@ COPY . .
 # Bygg applikationen
 RUN npm run build
 
-# Exponera port
+# Runtime stage
+FROM node:22-alpine AS runner
+
+WORKDIR /app 
+
+ENV NODE_ENV=production
+
+COPY package*.json ./
+
+RUN npm ci --only=production
+
+COPY --from=builder /app/.next ./.next
+
 EXPOSE 3000
 
-# Starta applikationen
 CMD ["npm", "start"]
