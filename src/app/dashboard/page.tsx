@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import EntryCard from "@/components/EntryCard";
-import { getEntries } from "@/lib/supabase/queries";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { Entry } from "@/types/database.types";
 import Link from "next/link";
 import Search from "@/components/Search";
 import { searchEntries } from "@/lib/supabase/queries";
+import { supabase } from "@/app/page";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -21,7 +21,17 @@ export default function DashboardPage() {
 
   const refreshEntries = async () => {
     try {
-      const data = await getEntries();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const res = await fetch(
+        `https://${process.env.NEXT_PUBLIC_PROJECT_REF}.functions.supabase.co/get-entries`,
+        {
+          headers: { Authorization: `Bearer ${session?.access_token}` },
+        },
+      );
+      const data = await res.json();
       setEntries(data);
     } catch (_err: unknown) {
       setError("Failed to load entries");
