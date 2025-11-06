@@ -1,106 +1,173 @@
-import { supabase } from './client'
-import { Entry, NewEntry } from '@/types/database.types'
+import { supabase } from "./client";
+import { Entry, NewEntry } from "@/types/database.types";
 
 /**
  * Fetch all entries for the authenticated user
  */
 export async function getEntries(): Promise<Entry[]> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error('User not authenticated')
+    throw new Error("User not authenticated");
   }
 
   const { data, error } = await supabase
-    .from('entries')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
+    .from("entries")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
 
   if (error) {
-    throw error
+    throw error;
   }
 
-  return data || []
+  return data || [];
 }
 
 /**
  * Create a new entry for the authenticated user
  */
 export async function createEntry(entry: NewEntry): Promise<Entry> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error('User not authenticated')
+    throw new Error("User not authenticated");
   }
 
   const { data, error } = await supabase
-    .from('entries')
+    .from("entries")
     .insert([
       {
         user_id: user.id,
-        title: `Title är: ${entry.title}`,
+        title: entry.title,
         content: entry.content,
-        created_at: new Date().toISOString()
-      }
+        created_at: new Date().toISOString(),
+      },
     ])
     .select()
-    .single()
+    .single();
 
   if (error) {
-    throw error
+    throw error;
   }
 
-  return data
+  return data;
 }
 
 /**
  * Fetch a single entry by id for the authenticated user
  */
 export async function getEntry(id: string): Promise<Entry> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error('User not authenticated')
+    throw new Error("User not authenticated");
   }
 
   const { data, error } = await supabase
-    .from('entries')
-    .select('*')
+    .from("entries")
+    .select("*")
     .match({ id, user_id: user.id })
-    .single()
+    .single();
 
   if (error) {
-    throw error
+    throw error;
   }
 
-  return data
+  return data;
 }
 
 /**
  * Update an entry
  */
-export async function updateEntry(id: string, updates: Partial<NewEntry>): Promise<Entry> {
-  const { data: { user } } = await supabase.auth.getUser()
+export async function updateEntry(
+  id: string,
+  updates: Partial<NewEntry>,
+): Promise<Entry> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error('User not authenticated')
+    throw new Error("User not authenticated");
   }
 
   if (!updates || Object.keys(updates).length === 0) {
-    throw new Error('No updates provided')
+    throw new Error("No updates provided");
   }
 
   const { data, error } = await supabase
-    .from('entries')
+    .from("entries")
     .update(updates)
     .match({ id, user_id: user.id })
     .select()
-    .single()
+    .single();
 
   if (error) {
-    throw error
+    throw error;
   }
 
-  return data
+  return data;
+}
+
+export async function deleteEntry(id: string): Promise<void> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { error } = await supabase
+    .from("entries")
+    .delete()
+    .match({ id, user_id: user.id });
+
+  if (error) {
+    console.error("Error deleting entry:", error.message);
+    throw error;
+  }
+
+  console.log("Deleted successfully");
+}
+
+/**
+ * Search entries by title and content for the authenticated user
+ * Uses case-insensitive matching (ilike) on both fields
+ */
+export async function searchEntries(query: string): Promise<Entry[]> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  if (!query || query.trim().length === 0) {
+    // Empty query returns all entries
+    return getEntries();
+  }
+
+  const searchTerm = `%${query}%`; // Add wildcards for partial matching
+
+  const { data, error } = await supabase
+    .from("entries")
+    .select("*")
+    .eq("user_id", user.id)
+    .or(`title.ilike.${searchTerm},content.ilike.${searchTerm}`) // Search both fields
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data || [];
 }
