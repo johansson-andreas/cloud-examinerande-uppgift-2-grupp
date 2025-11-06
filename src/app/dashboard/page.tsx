@@ -19,6 +19,15 @@ export default function DashboardPage() {
   const [_searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
 
+  const refreshEntries = async () => {
+    try {
+      const data = await getEntries();
+      setEntries(data);
+    } catch (_err: unknown) {
+      setError("Failed to load entries");
+    }
+  };
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -29,10 +38,7 @@ export default function DashboardPage() {
           return;
         }
 
-        const data = await getEntries();
-        setEntries(data);
-      } catch (_err: unknown) {
-        setError("Failed to load entries");
+        await refreshEntries();
       } finally {
         setLoading(false);
       }
@@ -116,7 +122,11 @@ export default function DashboardPage() {
         ) : (
           <div className="space-y-8">
             {entries.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} />
+              <EntryCard
+                key={entry.id}
+                entry={entry}
+                onDelete={refreshEntries}
+              />
             ))}
           </div>
         )}
