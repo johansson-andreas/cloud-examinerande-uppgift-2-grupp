@@ -35,7 +35,7 @@ export default function DashboardPage() {
     }
 
     loadData();
-  }, [router]);
+  }, [router, entries]);
 
   if (loading) {
     return (

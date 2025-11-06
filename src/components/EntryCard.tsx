@@ -1,4 +1,5 @@
 "use client";
+"use client";
 import { Entry } from "@/types/database.types";
 import { EditIcon } from "./icons/Edit";
 import { RemoveIcon } from "./icons/Remove";
@@ -21,6 +22,7 @@ export default function EntryCard({ entry }: EntryCardProps) {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: false,
   });
 
   const handleDelete = async (id: string) => {
@@ -42,6 +44,7 @@ export default function EntryCard({ entry }: EntryCardProps) {
             {entry.title}
           </h2>
         </div>
+
         <div>
           <Link href={`/edit-entry/${entry.id}`} title="Edit entry">
             <button className="btn-icon">
