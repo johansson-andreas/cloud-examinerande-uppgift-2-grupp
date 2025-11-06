@@ -36,4 +36,4 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add CHANGELOG.md
           git diff --quiet || git commit -m "chore: update changelog"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:prod
