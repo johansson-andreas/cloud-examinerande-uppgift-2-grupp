@@ -80,24 +80,24 @@ export default function DashboardPage() {
     <div className="min-h-screen">
       <Header />
 
-      <main
-        className="max-w-4xl mx-auto py-12"
-        style={{ paddingLeft: "80px", paddingRight: "80px" }}
-      >
+      <main className="max-w-4xl mx-auto py-12 px-8">
         <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-3xl font-serif text-dark-brown mb-2">
-              Your Entries
-            </h2>
-            <p className="text-warm-gray text-sm">
-              {entries.length} {entries.length === 1 ? "entry" : "entries"}
-            </p>
+          <div className="w-full flex flex-col max-sm:text-center sm:flex-row sm:justify-between gap-4">
+            <div>
+              <h2 className="text-3xl font-serif text-dark-brown mb-2">
+                Your Entries
+              </h2>
+              <p className="text-warm-gray text-sm">
+                {entries.length} {entries.length === 1 ? "entry" : "entries"}
+              </p>
+            </div>
+
+            <Link href="/new-entry">
+              <button className="btn-primary" style={{ minWidth: "160px" }}>
+                New Entry
+              </button>
+            </Link>
           </div>
-          <Link href="/new-entry">
-            <button className="btn-primary" style={{ minWidth: "160px" }}>
-              New Entry
-            </button>
-          </Link>
         </div>
 
         <div className="mb-4">

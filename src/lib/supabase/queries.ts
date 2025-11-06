@@ -116,6 +116,28 @@ export async function updateEntry(
   return data;
 }
 
+export async function deleteEntry(id: string): Promise<void> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { error } = await supabase
+    .from("entries")
+    .delete()
+    .match({ id, user_id: user.id });
+
+  if (error) {
+    console.error("Error deleting entry:", error.message);
+    throw error;
+  }
+
+  console.log("Deleted successfully");
+}
+
 /**
  * Search entries by title and content for the authenticated user
  * Uses case-insensitive matching (ilike) on both fields
