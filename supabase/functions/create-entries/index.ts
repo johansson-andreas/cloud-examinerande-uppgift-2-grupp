@@ -1,8 +1,9 @@
-/**
- * Supabase Edge Function: Create a new entry for the authenticated user
- */
-
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  getSupabaseClient,
+  CORS_HEADERS,
+  getAuthenticatedUser,
+  handlePreflight,
+} from "../../utils.ts";
 
 // -------------------------
 // Type definitions
@@ -12,87 +13,39 @@ interface NewEntry {
   content: string;
 }
 
-interface Entry {
-  id: string;
-  user_id: string;
-  title: string;
-  content: string;
-  created_at: string;
-}
-
-// -------------------------
-// Supabase client
-// -------------------------
-const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-
 // -------------------------
 // Edge Function
 // -------------------------
 Deno.serve(async (req: Request) => {
-  // Handle CORS preflight
-  if (req.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*", // replace with your frontend URL in production
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Authorization, Content-Type",
-      },
+  const preflightResponse = handlePreflight(req);
+  if (preflightResponse) return preflightResponse;
+
+  const supabase = getSupabaseClient(req);
+
+  const { user, error: userError } = await getAuthenticatedUser(supabase);
+
+  if (userError || !user) {
+    return new Response(JSON.stringify({ error: "User not authenticated" }), {
+      status: 401,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
   }
 
-  // Only allow POST
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
-  }
-
-  // Parse request body
-  let body: NewEntry;
+  let body: UpdateEntry;
   try {
     body = await req.json();
   } catch {
     return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
       status: 400,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
+      headers: { "Content-Type": "application/json", ...CORS_HEADERS },
     });
   }
 
-  // Create Supabase client with user token
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    global: {
-      headers: { Authorization: req.headers.get("Authorization") ?? "" },
-    },
-  });
-
-  // Get authenticated user
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    return new Response(JSON.stringify({ error: "User not authenticated" }), {
-      status: 401,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
-  }
+  const { title, content } = body;
 
   // Insert new entry
   const { data, error } = await supabase
-    .from<Entry>("entries")
+    .from("entries")
     .insert([
       {
         user_id: user.id,
