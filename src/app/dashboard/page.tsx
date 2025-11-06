@@ -8,12 +8,25 @@ import { getEntries } from "@/lib/supabase/queries";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { Entry } from "@/types/database.types";
 import Link from "next/link";
+import Search from "@/components/Search";
+import { searchEntries } from "@/lib/supabase/queries";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [_searchQuery, setSearchQuery] = useState<string>("");
+  const [isSearching, setIsSearching] = useState(false);
+
+  const refreshEntries = async () => {
+    try {
+      const data = await getEntries();
+      setEntries(data);
+    } catch (_err: unknown) {
+      setError("Failed to load entries");
+    }
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -25,17 +38,27 @@ export default function DashboardPage() {
           return;
         }
 
-        const data = await getEntries();
-        setEntries(data);
-      } catch (_err: unknown) {
-        setError("Failed to load entries");
+        await refreshEntries();
       } finally {
         setLoading(false);
       }
     }
 
     loadData();
-  }, [router, entries]);
+  }, [router]);
+
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    setIsSearching(true);
+    try {
+      const results = await searchEntries(query);
+      setEntries(results);
+    } catch (_err: unknown) {
+      setError("Failed to search entries");
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -83,6 +106,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <div className="mb-4">
+          <Search onSearch={handleSearch} isLoading={isSearching} />
+        </div>
+
         {entries.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-warm-gray mb-6">
@@ -95,7 +122,11 @@ export default function DashboardPage() {
         ) : (
           <div className="space-y-8">
             {entries.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} />
+              <EntryCard
+                key={entry.id}
+                entry={entry}
+                onDelete={refreshEntries}
+              />
             ))}
           </div>
         )}
