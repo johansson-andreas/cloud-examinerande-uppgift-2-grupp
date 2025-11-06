@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import { Entry } from "@/types/database.types";
 import { EditIcon } from "./icons/Edit";
 import { RemoveIcon } from "./icons/Remove";
@@ -12,9 +11,10 @@ import { useState } from "react";
 
 interface EntryCardProps {
   entry: Entry;
+  onDelete?: () => void;
 }
 
-export default function EntryCard({ entry }: EntryCardProps) {
+export default function EntryCard({ entry, onDelete }: EntryCardProps) {
   const [open, setOpen] = useState(false);
   const formattedDate = new Date(entry.created_at).toLocaleDateString("en-US", {
     year: "numeric",
@@ -28,6 +28,7 @@ export default function EntryCard({ entry }: EntryCardProps) {
   const handleDelete = async (id: string) => {
     try {
       await deleteEntry(id);
+      onDelete?.();
     } catch (_err: unknown) {
       console.error("Failed to delete entry");
     }
