@@ -3,37 +3,49 @@ name: Update Changelog
 on:
   push:
     branches:
-      - prod
+      - main  # Trigger when main is pushed
 
 permissions:
-  contents: write
+  contents: write  # Required to commit back to prod
 
 jobs:
   changelog:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # 1️⃣ Checkout the prod branch explicitly
+      - name: Checkout prod
         uses: actions/checkout@v4
         with:
+          ref: prod
           persist-credentials: true
-          fetch-depth: 0
+          fetch-depth: 0  # Required for auto-changelog to see full history
 
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # 4️⃣ Generate or update the changelog
       - name: Generate Changelog
         run: npx auto-changelog -p
 
+      # 5️⃣ Commit and push the changelog if it changed
       - name: Commit and Push Changelog
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add CHANGELOG.md
-          git diff --quiet || git commit -m "chore: update changelog"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:prod
+          git add --renormalize CHANGELOG.md
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update changelog"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:prod
+          else
+            echo "No changes detected, nothing to commit."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
