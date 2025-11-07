@@ -8,12 +8,25 @@ import { getEntries } from "@/lib/supabase/queries";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { Entry } from "@/types/database.types";
 import Link from "next/link";
+import Search from "@/components/Search";
+import { searchEntries } from "@/lib/supabase/queries";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [_searchQuery, setSearchQuery] = useState<string>("");
+  const [isSearching, setIsSearching] = useState(false);
+
+  const refreshEntries = async () => {
+    try {
+      const data = await getEntries();
+      setEntries(data);
+    } catch (_err: unknown) {
+      setError("Failed to load entries");
+    }
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -25,17 +38,27 @@ export default function DashboardPage() {
           return;
         }
 
-        const data = await getEntries();
-        setEntries(data);
-      } catch (_err: unknown) {
-        setError("Failed to load entries");
+        await refreshEntries();
       } finally {
         setLoading(false);
       }
     }
 
     loadData();
-  }, [router, entries]);
+  }, [router]);
+
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    setIsSearching(true);
+    try {
+      const results = await searchEntries(query);
+      setEntries(results);
+    } catch (_err: unknown) {
+      setError("Failed to search entries");
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -63,24 +86,28 @@ export default function DashboardPage() {
     <div className="min-h-screen">
       <Header />
 
-      <main
-        className="max-w-4xl mx-auto py-12"
-        style={{ paddingLeft: "80px", paddingRight: "80px" }}
-      >
+      <main className="max-w-4xl mx-auto py-12 px-8">
         <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-3xl font-serif text-dark-brown mb-2">
-              Your Entries
-            </h2>
-            <p className="text-warm-gray text-sm">
-              {entries.length} {entries.length === 1 ? "entry" : "entries"}
-            </p>
+          <div className="w-full flex flex-col max-sm:text-center sm:flex-row sm:justify-between gap-4">
+            <div>
+              <h2 className="text-3xl font-serif text-dark-brown mb-2">
+                Your Entries
+              </h2>
+              <p className="text-warm-gray text-sm">
+                {entries.length} {entries.length === 1 ? "entry" : "entries"}
+              </p>
+            </div>
+
+            <Link href="/new-entry">
+              <button className="btn-primary" style={{ minWidth: "160px" }}>
+                New Entry
+              </button>
+            </Link>
           </div>
-          <Link href="/new-entry">
-            <button className="btn-primary" style={{ minWidth: "160px" }}>
-              New Entry
-            </button>
-          </Link>
+        </div>
+
+        <div className="mb-4">
+          <Search onSearch={handleSearch} isLoading={isSearching} />
         </div>
 
         {entries.length === 0 ? (
@@ -95,7 +122,11 @@ export default function DashboardPage() {
         ) : (
           <div className="space-y-8">
             {entries.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} />
+              <EntryCard
+                key={entry.id}
+                entry={entry}
+                onDelete={refreshEntries}
+              />
             ))}
           </div>
         )}

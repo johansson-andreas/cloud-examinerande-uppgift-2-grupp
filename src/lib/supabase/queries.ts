@@ -137,3 +137,37 @@ export async function deleteEntry(id: string): Promise<void> {
 
   console.log("Deleted successfully");
 }
+
+/**
+ * Search entries by title and content for the authenticated user
+ * Uses case-insensitive matching (ilike) on both fields
+ */
+export async function searchEntries(query: string): Promise<Entry[]> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  if (!query || query.trim().length === 0) {
+    // Empty query returns all entries
+    return getEntries();
+  }
+
+  const searchTerm = `%${query}%`; // Add wildcards for partial matching
+
+  const { data, error } = await supabase
+    .from("entries")
+    .select("*")
+    .eq("user_id", user.id)
+    .or(`title.ilike.${searchTerm},content.ilike.${searchTerm}`) // Search both fields
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data || [];
+}

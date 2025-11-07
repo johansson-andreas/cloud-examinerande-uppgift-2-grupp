@@ -11,9 +11,10 @@ import { useState } from "react";
 
 interface EntryCardProps {
   entry: Entry;
+  onDelete?: () => void;
 }
 
-export default function EntryCard({ entry }: EntryCardProps) {
+export default function EntryCard({ entry, onDelete }: EntryCardProps) {
   const [open, setOpen] = useState(false);
   const formattedDate = new Date(entry.created_at).toLocaleDateString("en-US", {
     year: "numeric",
@@ -27,13 +28,14 @@ export default function EntryCard({ entry }: EntryCardProps) {
   const handleDelete = async (id: string) => {
     try {
       await deleteEntry(id);
+      onDelete?.();
     } catch (_err: unknown) {
       console.error("Failed to delete entry");
     }
   };
 
   return (
-    <div className="card" style={{ minWidth: "600px" }}>
+    <div className="card">
       <div className="flex items-start justify-between">
         <div className="mb-4">
           <div className="text-xs text-warm-gray mb-2 tracking-wide uppercase">
@@ -43,6 +45,7 @@ export default function EntryCard({ entry }: EntryCardProps) {
             {entry.title}
           </h2>
         </div>
+
         <div>
           <Link href={`/edit-entry/${entry.id}`} title="Edit entry">
             <button className="btn-icon">
@@ -66,8 +69,15 @@ export default function EntryCard({ entry }: EntryCardProps) {
           />
         </div>
       </div>
-      <div className="text-dark-brown/80 prose" style={{ width: "550px" }}>
-        <Markdown remarkPlugins={[remarkGfm]}>{entry.content}</Markdown>
+
+      <div className="prose max-w-none text-dark-brown/80">
+        <div
+          className="overflow-x-auto scrollbar-thin"
+          tabIndex={0}
+          aria-label="Scrollable table container"
+        >
+          <Markdown remarkPlugins={[remarkGfm]}>{entry.content}</Markdown>
+        </div>
       </div>
     </div>
   );
