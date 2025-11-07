@@ -38,7 +38,7 @@ export default function DashboardPage() {
     }
   };
 
-  useEffect(() => {
+  useEfect(() => {
     async function loadData() {
       try {
         const user = await getCurrentUser();
