@@ -16,12 +16,12 @@ echo ""
 
 # Get Docker Hub username from:
 # 1. Environment variable DOCKER_USERNAME
-# 2. .env.local file
+# 2. .env file
 # 3. Prompt user
 if [ -z "$DOCKER_USERNAME" ]; then
-    # Try to load from .env.local
-    if [ -f .env.local ]; then
-        export $(cat .env.local | grep "^DOCKER_USERNAME=" | xargs) 2>/dev/null || true
+    # Try to load from .env
+    if [ -f .env ]; then
+        export $(cat .env | grep "^DOCKER_USERNAME=" | xargs) 2>/dev/null || true
     fi
 fi
 
@@ -34,13 +34,13 @@ if [ -z "$DOCKER_USERNAME" ]; then
     echo -e "${RED}❌ Error: Docker Hub username is required${NC}"
     echo ""
     echo "You can set it by:"
-    echo "1. Adding DOCKER_USERNAME=your-username to .env.local"
+    echo "1. Adding DOCKER_USERNAME=your-username to .env"
     echo "2. Setting environment variable: export DOCKER_USERNAME=your-username"
     echo "3. Passing it when prompted"
     exit 1
 fi
 
-# Get local image name from .env.local or command line argument
+# Get local image name from .env or command line argument
 LOCAL_IMAGE="${1:-${IMAGE_NAME:-my-app}}"
 
 # Get tag (default: latest)
