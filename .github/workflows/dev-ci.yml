@@ -29,5 +29,8 @@ jobs:
       # 4. Kör lintern (Next.js har next lint inbyggt)
       - run: npm run lint
 
+      # 5. Kör TypeScript type-check utan att bygga
+      - run: npx tsc --noEmit
+
       # 5. Kör testerna (inkl. det som failar)
       - run: npm test
