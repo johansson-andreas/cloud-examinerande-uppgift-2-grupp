@@ -6,17 +6,14 @@ import {
 // -------------------------
 // Supabase client factory
 // -------------------------
-export function getSupabaseClient(req: Request): SupabaseClient {
+export function getSupabaseClient(req?: Request): SupabaseClient {
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-  const authHeader = req.headers.get("Authorization") ?? "";
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.split(" ")[1]
-    : authHeader;
+  const token = req?.headers.get("Authorization")?.replace("Bearer ", "") ?? "";
 
   return createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: `Bearer ${token}` } },
+    global: token ? { headers: { Authorization: `Bearer ${token}` } } : {},
   });
 }
 
