@@ -6,11 +6,10 @@ Alternativ ur spec:en som vi vill fokusera på.
 
 - [ ] Bryt ut backend från Next.js
 - [x] Kunna redigera inlägg
-- [ ] Ta bort inlägg (med bekräftelse innan det tas bort)
-- [ ] Enkel sök (taggar)
+- [x] Ta bort inlägg (med bekräftelse innan det tas bort)
+- [x] Enkel sök (taggar)
 - [x] Markdownsupport för inläggen
 - [ ] Få in AI-komponenten som läser in de 10 senaste inläggen och ger användaren feedback. Alltså tänk en knapp som man kan trycka på och så får man svar från AI.
-- [ ] Lägg in så att användaren kan lägga upp filer (använd någon typ av Storage)
 
 ## CI/CD:
 
@@ -20,7 +19,7 @@ Alternativ ur spec:en som vi vill fokusera på.
 - [x] Grundläggande CI/CD med Github Actions (t.ex. `lint` och `test`)
 - [x] Implementera tester
 - [ ] Testa projektet med Docker
-- [ ] Generera automatiskt en CHANGELOG.md baserat på era commit-meddelanden.
+- [x] Generera automatiskt en CHANGELOG.md baserat på era commit-meddelanden.
 - [ ] Deploya backend och frontend på olika ställen
 - [ ] Deploya projektet med containerisering (Docker)
 - [ ] Bygga och pusha Docker images automatiskt till ett container registry när kod pushas
