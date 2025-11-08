@@ -36,6 +36,10 @@
     @apply p-2 text-dark-brown rounded-sm hover:bg-beige transition-colors duration-200;
   }
 
+  .btn-search {
+    @apply px-5 py-2 text-dark-brown rounded-sm bg-beige hover:bg-gray-200 transition-colors duration-200 font-sans text-sm tracking-wide;
+  }
+
   .input-field {
     @apply w-full px-4 py-3 border border-warm-gray/30 rounded-sm bg-white focus:outline-none focus:border-dark-brown transition-colors duration-200;
   }
