@@ -3,7 +3,10 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - preview
+      - prod
+  pull_request:
+    branches:
+      - prod
   workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
 
 env:
@@ -12,6 +15,7 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    environment: production  # This line tells GitHub to use environment secrets
     
     steps:
       - name: Checkout code
@@ -43,3 +47,8 @@ jobs:
 
       - name: Image digest
         run: echo "Image pushed successfully! 🎉"
+
+      - name: Trigger Render deployment
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+          echo "Render deployment triggered! 🚀"
