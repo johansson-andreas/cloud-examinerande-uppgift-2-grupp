@@ -47,3 +47,8 @@ jobs:
 
       - name: Image digest
         run: echo "Image pushed successfully! 🎉"
+
+      - name: Trigger Render deployment
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+          echo "Render deployment triggered! 🚀"
