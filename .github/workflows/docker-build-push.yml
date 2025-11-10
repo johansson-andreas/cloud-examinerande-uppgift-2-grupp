@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - preview
+  pull_request:
+    branches:
+      - preview
   workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
 
 env:
