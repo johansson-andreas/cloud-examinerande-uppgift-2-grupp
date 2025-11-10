@@ -3,10 +3,10 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - preview
+      - prod
   pull_request:
     branches:
-      - preview
+      - prod
   workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
 
 env:
