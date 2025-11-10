@@ -4,12 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import EntryCard from "@/components/EntryCard";
-import { getCurrentUser } from "@/lib/supabase/auth";
 import { Entry } from "@/types/database.types";
 import Link from "next/link";
 import Search from "@/components/Search";
-import { searchEntries } from "@/lib/supabase/queries";
 import { supabase } from "@/app/page";
+import { fetchData, getSession } from "@/lib/utils";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -21,16 +20,10 @@ export default function DashboardPage() {
 
   const refreshEntries = async () => {
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const session = await getSession();
 
-      const res = await fetch(
-        `https://${process.env.NEXT_PUBLIC_PROJECT_REF}.functions.supabase.co/get-entries`,
-        {
-          headers: { Authorization: `Bearer ${session?.access_token}` },
-        },
-      );
+      const res = await fetchData("get-entries", session);
+
       const data = await res.json();
       setEntries(data);
     } catch (_err: unknown) {
@@ -41,9 +34,12 @@ export default function DashboardPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const user = await getCurrentUser();
+        const session = await getSession();
 
-        if (!user) {
+        const res = await fetchData("get-current-user", session);
+
+        const userRes = await res.json();
+        if ("error" in userRes) {
           router.push("/login");
           return;
         }
@@ -60,8 +56,19 @@ export default function DashboardPage() {
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     setIsSearching(true);
+
     try {
-      const results = await searchEntries(query);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const res = await fetch(
+        `https://${process.env.NEXT_PUBLIC_PROJECT_REF}.functions.supabase.co/search-entry?query=${query}`,
+        {
+          headers: { Authorization: `Bearer ${session?.access_token}` },
+        },
+      );
+      const results = await res.json();
       setEntries(results);
     } catch (_err: unknown) {
       setError("Failed to search entries");

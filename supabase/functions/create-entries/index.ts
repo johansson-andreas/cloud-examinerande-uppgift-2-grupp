@@ -31,7 +31,7 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  let body: UpdateEntry;
+  let body: NewEntry;
   try {
     body = await req.json();
   } catch {

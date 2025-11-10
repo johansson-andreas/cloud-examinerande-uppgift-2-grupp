@@ -23,7 +23,7 @@ export function getSupabaseClient(req?: Request): SupabaseClient {
 export const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "Authorization, Content-Type",
-  "Access-Control-Allow-Methods": "GET, PUT, POST, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, PUT, POST, OPTIONS, DELETE",
 };
 
 // -------------------------
