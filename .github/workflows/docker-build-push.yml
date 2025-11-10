@@ -15,6 +15,7 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    environment: production  # This line tells GitHub to use environment secrets
     
     steps:
       - name: Checkout code
