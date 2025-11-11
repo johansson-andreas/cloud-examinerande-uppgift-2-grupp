@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import EntryForm from "@/components/EntryForm";
-import { createEntry } from "@/lib/supabase/queries";
-import { getCurrentUser } from "@/lib/supabase/auth";
+import { fetchData, getSession } from "@/lib/utils";
+import { supabase } from "../page";
 
 export default function NewEntryPage() {
   const router = useRouter();
@@ -16,9 +16,14 @@ export default function NewEntryPage() {
 
   useEffect(() => {
     async function checkAuth() {
-      const user = await getCurrentUser();
-      if (!user) {
+      const session = await getSession();
+
+      const res = await fetchData("get-current-user", session);
+
+      const userRes = await res.json();
+      if ("error" in userRes) {
         router.push("/login");
+        return;
       }
     }
 
@@ -60,9 +65,29 @@ export default function NewEntryPage() {
             setError(null);
             setLoading(true);
             try {
-              await createEntry({ title, content });
+              const { data } = await supabase.auth.getSession();
+              const accessToken = data.session?.access_token;
+              const res = await fetch(
+                `https://${process.env.NEXT_PUBLIC_PROJECT_REF}.functions.supabase.co/create-entries`,
+                {
+                  body: JSON.stringify({
+                    title,
+                    content,
+                  }),
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    ...(accessToken && {
+                      Authorization: `Bearer ${accessToken}`,
+                    }),
+                  },
+                },
+              );
+              console.log(res);
+
               router.push("/dashboard");
             } catch (_err: unknown) {
+              console.error(_err);
               setError("Failed to create entry");
               setLoading(false);
             }

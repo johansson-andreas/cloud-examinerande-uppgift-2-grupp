@@ -21,6 +21,8 @@ services:
         sync: false  # Set manually in dashboard
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
         sync: false  # Set manually in dashboard
+      - key: GOOGLE_API_KEY
+        sync: false  # Set manually in dashboard - required for AI functionality
       - key: NODE_ENV
         value: production
     

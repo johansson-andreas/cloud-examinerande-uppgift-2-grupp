@@ -4,12 +4,24 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import EntryCard from "@/components/EntryCard";
-import { getEntries } from "@/lib/supabase/queries";
-import { getCurrentUser } from "@/lib/supabase/auth";
 import { Entry } from "@/types/database.types";
 import Link from "next/link";
 import Search from "@/components/Search";
-import { searchEntries } from "@/lib/supabase/queries";
+import { supabase } from "@/app/page";
+import { fetchData, getSession } from "@/lib/utils";
+import AnalyzeButton from "@/components/AnalyzeButton";
+import FeedbackModal from "@/components/FeedbackModal";
+
+type AnalysisResult = {
+  overall: { mood: string; score: number; summary: string };
+  items: Array<{
+    entryId: string;
+    mood: string;
+    score: number;
+    tags: string[];
+    summary: string;
+  }>;
+};
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -18,10 +30,16 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [_searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [open, setOpen] = useState(false);
 
   const refreshEntries = async () => {
     try {
-      const data = await getEntries();
+      const session = await getSession();
+
+      const res = await fetchData("get-entries", session);
+
+      const data = await res.json();
       setEntries(data);
     } catch (_err: unknown) {
       setError("Failed to load entries");
@@ -31,9 +49,12 @@ export default function DashboardPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const user = await getCurrentUser();
+        const session = await getSession();
 
-        if (!user) {
+        const res = await fetchData("get-current-user", session);
+
+        const userRes = await res.json();
+        if ("error" in userRes) {
           router.push("/login");
           return;
         }
@@ -50,8 +71,19 @@ export default function DashboardPage() {
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     setIsSearching(true);
+
     try {
-      const results = await searchEntries(query);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const res = await fetch(
+        `https://${process.env.NEXT_PUBLIC_PROJECT_REF}.functions.supabase.co/search-entry?query=${query}`,
+        {
+          headers: { Authorization: `Bearer ${session?.access_token}` },
+        },
+      );
+      const results = await res.json();
       setEntries(results);
     } catch (_err: unknown) {
       setError("Failed to search entries");
@@ -97,12 +129,20 @@ export default function DashboardPage() {
                 {entries.length} {entries.length === 1 ? "entry" : "entries"}
               </p>
             </div>
-
-            <Link href="/new-entry">
-              <button className="btn-primary" style={{ minWidth: "160px" }}>
-                New Entry
-              </button>
-            </Link>
+            <div className="flex items-center gap-3 justify-end">
+              <AnalyzeButton
+                onDone={refreshEntries}
+                onResult={(r) => {
+                  setAnalysis(r);
+                  setOpen(true);
+                }}
+              />
+              <Link href="/new-entry">
+                <button className="btn-primary" style={{ minWidth: "160px" }}>
+                  New Entry
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -130,6 +170,12 @@ export default function DashboardPage() {
             ))}
           </div>
         )}
+        <FeedbackModal
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          analysis={analysis}
+          entries={entries.map((e) => ({ id: e.id, title: e.title }))}
+        />
       </main>
     </div>
   );

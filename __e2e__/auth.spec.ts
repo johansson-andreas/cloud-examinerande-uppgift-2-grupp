@@ -5,7 +5,7 @@ const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
 
 test.use({ storageState: undefined });
 
-test("@ci login -> dashboard -> sign out", async ({ page }) => {
+test("@smoke login -> dashboard -> sign out", async ({ page }) => {
   test.skip(
     !TEST_EMAIL || !TEST_PASSWORD,
     "TEST_USER_EMAIL and TEST_USER_PASSWORD env vars are required",

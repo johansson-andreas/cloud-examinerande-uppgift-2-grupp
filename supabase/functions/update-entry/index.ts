@@ -1,3 +1,7 @@
+/**
+ * Supabase Edge Function: Update an existing entry for the authenticated user
+ */
+
 import {
   getSupabaseClient,
   CORS_HEADERS,
@@ -8,9 +12,12 @@ import {
 // -------------------------
 // Type definitions
 // -------------------------
-interface NewEntry {
-  title: string;
-  content: string;
+interface UpdateEntry {
+  id: string; // ID of the entry to update
+  updates: {
+    title?: string; // Optional new title
+    content?: string; // Optional new content
+  };
 }
 
 // -------------------------
@@ -31,7 +38,7 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  let body: NewEntry;
+  let body: UpdateEntry;
   try {
     body = await req.json();
   } catch {
@@ -41,38 +48,42 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  const { title, content } = body;
+  const { id, updates } = body;
 
-  // Insert new entry
+  if (!id) {
+    return new Response(JSON.stringify({ error: "Missing entry ID" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json", ...CORS_HEADERS },
+    });
+  }
+
+  if (
+    !updates ||
+    (updates.title === undefined && updates.content === undefined)
+  ) {
+    return new Response(JSON.stringify({ error: "No updates provided" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json", ...CORS_HEADERS },
+    });
+  }
+
   const { data, error } = await supabase
     .from("entries")
-    .insert([
-      {
-        user_id: user.id,
-        title: body.title,
-        content: body.content,
-        created_at: new Date().toISOString(),
-      },
-    ])
+    .update(updates)
+    .match({ id, user_id: user.id })
     .select()
     .single();
 
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
+      headers: { "Content-Type": "application/json", ...CORS_HEADERS },
     });
   }
 
   // Success response
   return new Response(JSON.stringify(data), {
-    status: 201,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
+    status: 200,
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS },
   });
 });

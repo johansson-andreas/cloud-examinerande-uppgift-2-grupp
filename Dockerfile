@@ -16,10 +16,14 @@ COPY . .
 # Build arguments for environment variables (optional - can be set at build time)
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG GOOGLE_API_KEY
+ARG NEXT_PUBLIC_PROJECT_REF
 
 # Set environment variables for build time
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV GOOGLE_API_KEY=$GOOGLE_API_KEY
+ENV NEXT_PUBLIC_PROJECT_REF=$NEXT_PUBLIC_PROJECT_REF
 
 # Build the Next.js app
 RUN npm run build
@@ -30,6 +34,10 @@ WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV=production
+
+# Runtime environment variables (these can be overridden at container startup)
+ARG GOOGLE_API_KEY
+ENV GOOGLE_API_KEY=$GOOGLE_API_KEY
 
 # Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs
