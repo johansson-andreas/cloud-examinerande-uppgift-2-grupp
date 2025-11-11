@@ -30,7 +30,7 @@ jobs:
       - run: npm run lint
 
       # 5. Kör TypeScript type-check utan att bygga
-      - run: npx tsc --noEmit
+      - run: npx tsc --noEmit -p tsconfig.json
 
       # 5. Kör testerna (inkl. det som failar)
       - run: npm test
