@@ -2,12 +2,15 @@
 
 A minimalist journaling application built with Next.js 14, TypeScript, Tailwind CSS, and Supabase. This project serves as a starting point for students to practice debugging, adding features, and improving existing code.
 
+Deployed link: [https://fjs24grupp4.onrender.com/](https://fjs24grupp4.onrender.com/)
 
 ## Tech Stack
+
 - **Frontend Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
-- **Backend/Database:** Supabase (Authentication + PostgreSQL)
+- **Backend/Database:** Supabase (Authentication + PostgreSQL + Edge Functions)
+- **Deployment**: GitHub Actions, Docker & Render
 
 ## Getting Started
 
@@ -51,7 +54,6 @@ This app follows a minimalist, editorial design approach:
 - **Spacing:** Generous whitespace for readability
 - **Layout:** Clean, centered layouts with maximum content width
 - **Interaction:** Subtle hover states and transitions
-
 
 ## Resources
 
