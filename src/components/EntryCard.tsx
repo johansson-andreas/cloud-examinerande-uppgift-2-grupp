@@ -2,12 +2,12 @@
 import { Entry } from "@/types/database.types";
 import { EditIcon } from "./icons/Edit";
 import { RemoveIcon } from "./icons/Remove";
-import { deleteEntry } from "@/lib/supabase/queries";
 import { ConfirmModal } from "./ConfirmModal";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useState } from "react";
+import { supabase } from "@/app/page";
 
 interface EntryCardProps {
   entry: Entry;
@@ -27,7 +27,18 @@ export default function EntryCard({ entry, onDelete }: EntryCardProps) {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteEntry(id);
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      const res = await fetch(
+        `https://${process.env.NEXT_PUBLIC_PROJECT_REF}.functions.supabase.co/delete-entry?id=${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+          },
+        },
+      );
+
       onDelete?.();
     } catch (_err: unknown) {
       console.error("Failed to delete entry");
