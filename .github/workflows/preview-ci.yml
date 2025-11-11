@@ -39,6 +39,7 @@ jobs:
   playwright-full-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    environment: production  # Access environment secrets
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,7 +50,12 @@ jobs:
 
       - run: npm ci
       - run: npx playwright install --with-deps
-      - run: npx playwright test
+      
+      - name: Run Playwright tests
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: npx playwright test
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -60,6 +66,7 @@ jobs:
 
   lighthouse:
     runs-on: ubuntu-latest
+    environment: production  # Access environment secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,4 +85,7 @@ jobs:
         run: npm install -g @lhci/cli
 
       - name: Run Lighthouse CI
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: npm run lhci:pr
