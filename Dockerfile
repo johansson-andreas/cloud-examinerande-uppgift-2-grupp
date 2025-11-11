@@ -16,10 +16,12 @@ COPY . .
 # Build arguments for environment variables (optional - can be set at build time)
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG GOOGLE_API_KEY
 
 # Set environment variables for build time
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV GOOGLE_API_KEY=$GOOGLE_API_KEY
 
 # Build the Next.js app
 RUN npm run build

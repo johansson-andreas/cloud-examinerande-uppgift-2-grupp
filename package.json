@@ -11,7 +11,9 @@
     "changelog": "auto-changelog -p",
     "test": "jest",
     "test:playwright": "playwright test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "lhci:pr": "lhci autorun --config=lighthouserc.pr.json",
+    "lhci:full": "lhci autorun --config=lighthouserc.full.json"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
@@ -28,6 +30,7 @@
     "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.56.1",
     "@supabase/supabase-js": "^2.78.0",
     "@tailwindcss/postcss": "^4",

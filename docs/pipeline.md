@@ -1,21 +1,33 @@
 # Pipeline
 
-## Automatisk Prettier formatering
+## Development
 
-Automatisk formatering med Prettier genom [Husky](https://typicode.github.io/husky/) git hook innan en commit exekuteras. Innebär att git diffs kommer se mycket renare ut och det blir lättare att jämföra kodändringar.
+### Automatisk Prettier formatering
 
-## Test och lint
+Automatisk formatering med Prettier genom [Husky](https://typicode.github.io/husky/) git hook innan en commit exekuteras. Innebär att git diffs kommer se mycket renare ut och det blir lättare att jämföra kodändringar i längden för projektet.
 
-När man gör en pull request till branchen `main` så kommer requesten gå igenom ett workflow som lintar och testar koden. Tester görs med jest och Playwight (e2e).
+### Main: Lint och unit tests
 
-## Auto Changelog
+`main`-branchen är en utvecklingsbranch där alla nya features samlas så att man kan se till att allt som kommer in fungerar tillsammans.
 
-Lägg automatiskt till inlägg i CHANGELOG.md genom [auto-changelog](https://github.com/CookPete/auto-changelog).
+När man gör en push eller pull request till branchen `main` så kommer requesten gå igenom ett workflow som lintar och kör enklare tester på koden. Tester görs med jest och Playwight (e2e).
 
-## Deploya Next.js app
+### Preview: Fulla tester
 
-Next.js-appen deployas automatiskt till Vercel när commits genomförs till branchen `prod`.
+Vid push till `preview`-branchen så kommer större tester med jest och Playwright att köras, samt så görs en performance-utvärdering med Lighthouse.
 
-## Deploya serverless functions
+## Deploy
 
-Vi kommer att refaktorera backend-logik från Next.js-appen till en separat mapp för att deployas separat från appen. Vi vill utforska alternativ som **Supabase edge functions** eller **AWS Lamba** istället för att bygga en Express.js server.
+Deployment av appens olika komponenter körs automatiskt när kod pushas in i `prod`-branchen.
+
+### Next.js app
+
+Next.js-appen deployas till [Render](https://render.com).
+
+### Edge functions
+
+Vår "backend" består av att göra anrop till "edge functions" som ligger hos Supabase.
+
+### Auto Changelog
+
+Lägger automatiskt till inlägg i CHANGELOG.md genom [auto-changelog](https://github.com/CookPete/auto-changelog) när kod pushas in i `prod`.
