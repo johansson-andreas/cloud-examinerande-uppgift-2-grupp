@@ -1,5 +1,4 @@
 import React from "react";
-import { deleteEntry } from "@/lib/supabase/queries";
 
 interface ConfirmModalProps {
   open: boolean;

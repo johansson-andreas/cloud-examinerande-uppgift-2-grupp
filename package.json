@@ -11,9 +11,13 @@
     "changelog": "auto-changelog -p",
     "test": "jest",
     "test:playwright": "playwright test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "lhci:pr": "lhci autorun --config=lighthouserc.pr.json",
+    "lhci:full": "lhci autorun --config=lighthouserc.full.json"
   },
   "dependencies": {
+    "@google/genai": "^1.29.0",
+    "@google/generative-ai": "^0.24.1",
     "@uiw/react-md-editor": "^4.0.8",
     "next": "16.0.0",
     "react": "19.2.0",
@@ -21,9 +25,12 @@
     "react-markdown": "^10.1.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
-    "supabase": "^2.54.11"
+    "supabase": "^2.54.11",
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.56.1",
     "@supabase/supabase-js": "^2.78.0",
     "@tailwindcss/postcss": "^4",
