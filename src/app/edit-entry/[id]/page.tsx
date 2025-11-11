@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Header from "@/components/Header";
 import EntryForm from "@/components/EntryForm";
-import { getEntry, updateEntry } from "@/lib/supabase/queries";
 import { Entry } from "@/types/database.types";
+import { supabase } from "@/app/page";
 
 export default function EditEntryPage() {
   const router = useRouter();
@@ -23,7 +23,18 @@ export default function EditEntryPage() {
 
     async function load() {
       try {
-        const data = await getEntry(entryId);
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        const res = await fetch(
+          `https://${process.env.NEXT_PUBLIC_PROJECT_REF}.functions.supabase.co/get-entry?id=${entryId}`,
+          {
+            headers: { Authorization: `Bearer ${session?.access_token}` },
+          },
+        );
+
+        const data = await res.json();
         setEntry(data);
       } catch (_err: unknown) {
         setError("Failed to load entry");
@@ -34,6 +45,33 @@ export default function EditEntryPage() {
 
     load();
   }, [id]);
+
+  const updateEntry = async (
+    entryId: string,
+    updates: { title: string; content: string },
+  ) => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const res = await fetch(
+      `https://${process.env.NEXT_PUBLIC_PROJECT_REF}.functions.supabase.co/update-entry`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({
+          id: entryId,
+          updates,
+        }),
+      },
+    );
+
+    const updatedEntry = await res.json();
+    console.log(updatedEntry);
+  };
 
   if (loading) {
     return (

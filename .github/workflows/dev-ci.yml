@@ -21,8 +21,8 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
-      - run: npx tsc --noEmit
-
+      - run: npx tsc --noEmit -p tsconfig.json
+        working-directory: . 
   jest-smoke-tests:
     runs-on: ubuntu-latest
     steps:
