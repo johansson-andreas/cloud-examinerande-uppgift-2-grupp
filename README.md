@@ -62,4 +62,6 @@ This app follows a minimalist, editorial design approach:
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs)
 
-## Fyll på med era reflektioner nedan!
+---
+
+## Reflektioner
