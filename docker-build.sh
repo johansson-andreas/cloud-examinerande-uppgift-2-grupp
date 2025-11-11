@@ -32,6 +32,13 @@ if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ] || [ -z "$NEXT_PUBLIC_SUPABASE_ANON_KEY" ]
     exit 1
 fi
 
+# Optional: Warn if GOOGLE_API_KEY is missing (AI functionality won't work)
+if [ -z "$GOOGLE_API_KEY" ]; then
+    echo -e "${YELLOW}⚠️  Warning: GOOGLE_API_KEY not set${NC}"
+    echo "AI analysis features will not work without this key."
+    echo ""
+fi
+
 # Get image name from .env or command line argument
 IMAGE_NAME="${1:-${IMAGE_NAME:-my-app}}"
 
@@ -44,6 +51,7 @@ docker build \
   --platform linux/amd64 \
   --build-arg NEXT_PUBLIC_SUPABASE_URL="$NEXT_PUBLIC_SUPABASE_URL" \
   --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$NEXT_PUBLIC_SUPABASE_ANON_KEY" \
+  --build-arg GOOGLE_API_KEY="$GOOGLE_API_KEY" \
   -t "$IMAGE_NAME" \
   .
 

@@ -35,6 +35,10 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
+# Runtime environment variables (these can be overridden at container startup)
+ARG GOOGLE_API_KEY
+ENV GOOGLE_API_KEY=$GOOGLE_API_KEY
+
 # Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
