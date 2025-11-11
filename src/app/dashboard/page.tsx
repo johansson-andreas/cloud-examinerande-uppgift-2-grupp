@@ -9,6 +9,19 @@ import Link from "next/link";
 import Search from "@/components/Search";
 import { supabase } from "@/app/page";
 import { fetchData, getSession } from "@/lib/utils";
+import AnalyzeButton from "@/components/AnalyzeButton";
+import FeedbackModal from "@/components/FeedbackModal";
+
+type AnalysisResult = {
+  overall: { mood: string; score: number; summary: string };
+  items: Array<{
+    entryId: string;
+    mood: string;
+    score: number;
+    tags: string[];
+    summary: string;
+  }>;
+};
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -17,6 +30,8 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [_searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [open, setOpen] = useState(false);
 
   const refreshEntries = async () => {
     try {
@@ -114,12 +129,20 @@ export default function DashboardPage() {
                 {entries.length} {entries.length === 1 ? "entry" : "entries"}
               </p>
             </div>
-
-            <Link href="/new-entry">
-              <button className="btn-primary" style={{ minWidth: "160px" }}>
-                New Entry
-              </button>
-            </Link>
+            <div className="flex items-center gap-3 justify-end">
+              <AnalyzeButton
+                onDone={refreshEntries}
+                onResult={(r) => {
+                  setAnalysis(r);
+                  setOpen(true);
+                }}
+              />
+              <Link href="/new-entry">
+                <button className="btn-primary" style={{ minWidth: "160px" }}>
+                  New Entry
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -147,6 +170,12 @@ export default function DashboardPage() {
             ))}
           </div>
         )}
+        <FeedbackModal
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          analysis={analysis}
+          entries={entries.map((e) => ({ id: e.id, title: e.title }))}
+        />
       </main>
     </div>
   );

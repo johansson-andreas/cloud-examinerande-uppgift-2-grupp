@@ -4,6 +4,7 @@ import {
   getAuthenticatedUser,
   handlePreflight,
 } from "../../utils.ts";
+// deno-lint-ignore-file no-explicit-any
 
 Deno.serve(async (req: Request) => {
   try {

@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: dagboks-appen
+    runtime: docker
+    # Option 1: Deploy from Docker Hub image
+    # image:
+    #   url: your-dockerhub-username/dagboks-appen:latest
+    
+    # Option 2: Build from Dockerfile in repo (if connecting GitHub)
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    
+    plan: free  # Change to 'starter' or higher for production
+    
+    region: frankfurt  # Choose: oregon, frankfurt, singapore, ohio, virginia
+    
+    # Environment variables - REQUIRED
+    # Set these in Render dashboard or here (not recommended for sensitive data)
+    envVars:
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false  # Set manually in dashboard
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false  # Set manually in dashboard
+      - key: NODE_ENV
+        value: production
+    
+    # Health check configuration
+    healthCheckPath: /
+    
+    # Automatic deploys when image is updated (for Docker Hub)
+    # autoDeploy: true
