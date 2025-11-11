@@ -1,12 +1,6 @@
 name: playwright
-# Temporarily disabled. To re-enable, restore the triggers below.
 on:
   workflow_dispatch: {}
-# on:
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
 jobs:
   test:
     timeout-minutes: 60
@@ -21,7 +15,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test --grep @ci
+      run: npx playwright test --grep @smoke
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:

@@ -1,12 +1,12 @@
-name: dev-ci
+name: preview-ci
 
 on:
   push:
     branches:
-      - main
+      - preview
   pull_request:
     branches:
-      - main
+      - preview
 
 jobs:
   lint:
@@ -23,7 +23,7 @@ jobs:
       - run: npm run lint
       - run: npx tsc --noEmit
 
-  jest-smoke-tests:
+  jest-full-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,11 +34,11 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - run: npm ci
-      - run: npm test -- --testNamePattern="smoke"
+      - run: npm test
 
-  playwright-smoke-tests:
+  playwright-full-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     environment: production  # Access environment secrets
     steps:
       - uses: actions/checkout@v4
@@ -51,15 +51,47 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps
       
-      - name: Run Playwright smoke tests
+      - name: Run Playwright tests
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-        run: npx playwright test --grep @smoke
+        run: npx playwright test
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-smoke
+          name: playwright-report
           path: playwright-report/
-          retention-days: 7
+          retention-days: 30
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    environment: production  # Access environment secrets
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: npm run build
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: npm run lhci:pr
