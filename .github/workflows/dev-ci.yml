@@ -31,6 +31,6 @@ jobs:
 
       # 5. Kör TypeScript type-check utan att bygga
       - run: npx tsc --noEmit -p tsconfig.json
-
+        working-directory: . 
       # 5. Kör testerna (inkl. det som failar)
       - run: npm test
