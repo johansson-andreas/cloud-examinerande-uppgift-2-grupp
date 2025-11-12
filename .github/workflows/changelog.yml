@@ -3,7 +3,7 @@ name: Update Changelog
 on:
   push:
     branches:
-      - main  # Trigger when main is pushed
+      - prod  # Trigger when main is pushed
 
 permissions:
   contents: write  # Required to commit back to prod
