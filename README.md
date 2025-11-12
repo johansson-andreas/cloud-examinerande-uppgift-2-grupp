@@ -128,15 +128,17 @@ Nästa steg är att pusha in kod i `prod`-branchen, där projektet byggs till en
 
 ### Issues och PRs
 
-Våran lösning med Github projects(kanban) hade möjligheten att kunna skapa en separat branch för varje issue. Med detta så höjdes tydligheten i att alltid kunna se branchen som uppdateras samt att kanban brädet flyttade issues automatiskt till done när man pushade upp till production.
+Våran lösning med Github projects (kanban) hade möjligheten att kunna skapa en separat branch för varje issue. Med detta så höjdes tydligheten i att alltid kunna se branchen som uppdateras samt att kanban brädet flyttade issues automatiskt till done när man pushade upp till production.
 
-(med code-reviews av andra i teamet (och kanske AI))
+När en PR läggs in till main-branchen så behöver en annan teammedlem göra en code review och godkänna PR:en innan den kan mergeas in i main. En repo maintainer ansvarar sedan för att föra in koden i preview och sedan prod-branchen. Vi gjorde detta för att utvärdera koden för att hitta olika buggar som inte testerna hittade samt se till att inget saknas av tidigare PR in i main ifall något gått fel i en merge konflikt eller liknande.
 
-Jobba i Github Projects
+Vi valde att inte implementera AI att delta i code reviews. Vi ville hellre gå igenom kod manuellt för att ha koll på all funktionalitet i kodbasen och se till att AI:n inte av misstag släpper in oönskat eller felaktig kod.
 
 ### AI-användning i projektet
 
-AI har framförallt varit ett bra verktyg för att hjälpa till att skriva tester, då tester ibland kan ta ännu längre tid än att skriva faktiskt funktionalitet. Det har varit hjälpsamt att lära sig om hur man skriver tester med olika libraries, samt vilka typer av tester som är bra att genomföra och att få en introduktion till best practices. Det har också hjälp en del som ett stöd skriva våra workflows.
+AI har framförallt varit ett bra verktyg för att hjälpa till att skriva tester, då tester ibland kan ta ännu längre tid än att skriva faktiskt funktionalitet. Det har varit hjälpsamt att lära sig om hur man skriver tester med olika libraries, samt vilka typer av tester som är bra att genomföra och för att få en introduktion till best practices. Det har också hjälp en del som ett stöd skriva våra workflows. Då vi inte lagt till så mycket egna features i appen har vi mest testat på att skriva tester utefter existerande kod.
+
+Det har också generellt varit ett bra bollplank för att få idéer och komma fram till de bästa lösningarna på problem, och också lära sig nya saker som man kanske inte kommit på på egen hand.
 
 ### Pipeline
 
@@ -150,14 +152,20 @@ Vi har ett antal olika workflows som körs i olika delar av vår CI/CD pipeline.
 
 #### Tester
 
-Vi har satt upp några grundläggande tester som körs vid push till `main`- och `preview`-branchen. I main har vi valt att bara köra mindre tester med Jest som går snabbare att köra för att göra det smidigare att köra in nya features i main branchen, och då snabbt kunna komma igång med att se till att allt är integrerat ordentligt. Detta står `dev-ci`-workflowet för, och kör endast tester som är taggade med `@smoke`.
+Vi har satt upp några grundläggande tester som körs vid push till `main`- och `preview`-branchen. I main har vi valt att bara köra mindre tester med Jest som går snabbare att köra för att göra det smidigare att få in nya features i main branchen, och då snabbt kunna komma igång med att se till att allt är integrerat ordentligt. Detta står `dev-ci`-workflowet för, och kör endast tester som är taggade med `@smoke` (samt lint).
 
 `preview-ci`-workflowet kör alla tillgängliga tester, och kör utöver Jest-tester också e2e tester med Playwright, samt gör en performance review med Lighthouse CI.
 
-Projektet hade med fördel kunnat byggas ut mer fler tester, men vi valde att fokusera just på hur man integrerar det i ett CI/CD workflow, så att skriva utförliga test-sviter var inte vår prioritet.
+Projektet hade med fördel kunnat byggas ut mer fler tester, men vi valde att fokusera på hur man integrerar tester i ett CI/CD workflow, så att skriva utförliga test-sviter var inte vår prioritet.
+
+#### Deploy
+
+Från början satte vi upp en deploy av appen till Vercel, men då det innebär minimalt med setup och går oerhört lätt att få till så ville vi prova på en lite mer komplicerad deployprocess genom att bygga en Docker image som sedan deployas på tjänsten Render. Själva deployen till Render är ganska enkel, utan det som tog tid att få till var att optimera bygget av Docker image-filen och se till att den korrekt laddades upp till Docker Hub. En till utmaning blev att integrera detta i ett GitHub actions workflow och se till att alla nödvändiga nycklar fanns att tillgå i GitHub secrets för att workflowet skulle kunna genomföra bygget och deployen automatiskt.
+
+Vår backend, som vi konverterat till Supabase edge functions, behöver just nu deployas manuellt, men går väldigt enkelt att integrera i ett existerande workflow.
 
 ### Vidareutveckling och förbättringar
 
 - En mer robust utvecklingspipeline med testdatabas och preview deploy kopplad till `preview`-branchen
-- Mer fördjupning i tester, vi har mest fokuserat på att bygga ett workflow och pipeline
+- Mer fördjupning i tester: vi har mest fokuserat på att bygga ett workflow och pipeline
 - Dyka lite djupare i auto-changelog, t.ex. bygga en egen template.
